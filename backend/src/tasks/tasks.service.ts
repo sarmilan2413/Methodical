@@ -6,52 +6,52 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Injectable()
 export class TasksService {
-	constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-	create(dto: CreateTaskDto, userId: number): Promise<Task> {
-		return this.prisma.task.create({
-			data: {
-				title: dto.title,
-				description: dto.description,
-				status: dto.status,
-				userId,
-			},
-		});
-	}
+  create(dto: CreateTaskDto, userId: number): Promise<Task> {
+    return this.prisma.task.create({
+      data: {
+        title: dto.title,
+        description: dto.description,
+        status: dto.status,
+        userId,
+      },
+    });
+  }
 
-	findAllByUserId(userId: number): Promise<Task[]> {
-		return this.prisma.task.findMany({
-			where: { userId },
-			orderBy: { createdAt: 'desc' },
-		});
-	}
+  findAllByUserId(userId: number): Promise<Task[]> {
+    return this.prisma.task.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 
-	findOneById(id: number, userId: number): Promise<Task | null> {
-		return this.prisma.task.findFirst({ where: { id, userId } });
-	}
+  findOneById(id: number, userId: number): Promise<Task | null> {
+    return this.prisma.task.findFirst({ where: { id, userId } });
+  }
 
-	update(id: number, dto: UpdateTaskDto, userId: number): Promise<Task> {
-		return this.prisma.$transaction(async (tx) => {
-			const existingTask = await tx.task.findFirst({ where: { id, userId } });
-			if (!existingTask) {
-				throw new NotFoundException('Task not found');
-			}
+  update(id: number, dto: UpdateTaskDto, userId: number): Promise<Task> {
+    return this.prisma.$transaction(async (tx) => {
+      const existingTask = await tx.task.findFirst({ where: { id, userId } });
+      if (!existingTask) {
+        throw new NotFoundException('Task not found');
+      }
 
-			return tx.task.update({
-				where: { id },
-				data: dto,
-			});
-		});
-	}
+      return tx.task.update({
+        where: { id },
+        data: dto,
+      });
+    });
+  }
 
-	remove(id: number, userId: number): Promise<Task> {
-		return this.prisma.$transaction(async (tx) => {
-			const existingTask = await tx.task.findFirst({ where: { id, userId } });
-			if (!existingTask) {
-				throw new NotFoundException('Task not found');
-			}
+  remove(id: number, userId: number): Promise<Task> {
+    return this.prisma.$transaction(async (tx) => {
+      const existingTask = await tx.task.findFirst({ where: { id, userId } });
+      if (!existingTask) {
+        throw new NotFoundException('Task not found');
+      }
 
-			return tx.task.delete({ where: { id } });
-		});
-	}
+      return tx.task.delete({ where: { id } });
+    });
+  }
 }

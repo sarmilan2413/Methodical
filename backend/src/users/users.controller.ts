@@ -7,14 +7,14 @@ import type { JwtPayload } from '../auth/interfaces/jwt-payload.interface';
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
-	constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
-	@Get('me')
-	async findMe(@CurrentUser() user: JwtPayload) {
-		const userProfile = await this.usersService.findById(user.sub);
-		if (!userProfile) {
-			throw new NotFoundException('User not found');
-		}
-		return userProfile;
-	}
+  @Get('me')
+  async findMe(@CurrentUser() user: JwtPayload) {
+    const userProfile = await this.usersService.findById(user.sub);
+    if (!userProfile) {
+      throw new NotFoundException('User not found');
+    }
+    return userProfile;
+  }
 }
