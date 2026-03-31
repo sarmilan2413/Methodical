@@ -58,15 +58,15 @@ npm run dev
 Backend:
 
 ```env
-DATABASE_URL=your_db_url
-JWT_SECRET=your_secret
+DATABASE_URL="postgresql://postgres:1234@localhost:5432/task_manager"
+JWT_SECRET="task_manager_super_secret_change_this"
 PORT=3000
 ```
 
 Frontend:
 
 ```env
-VITE_API_URL=your_backend_url/api
+VITE_API_URL=http://localhost:3000/api
 ```
 
 ---
