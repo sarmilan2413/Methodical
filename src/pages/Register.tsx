@@ -34,7 +34,8 @@ const Register = () => {
       if (error instanceof ApiError) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("Unable to create account.");
+        console.error("Registration error:", error);
+        setErrorMessage(error instanceof Error ? error.message : "Unable to create account.");
       }
     } finally {
       setIsSubmitting(false);
