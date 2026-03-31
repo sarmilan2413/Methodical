@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
+import { Button, Input } from "@/components/common";
 
 const CreateTask = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const CreateTask = () => {
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-2">
               <label className="block text-xs font-bold uppercase tracking-widest text-on-surface-variant" htmlFor="task-title">Task Title</label>
-              <input
+              <Input
                 className="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 text-on-surface font-medium focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all placeholder:text-outline-variant outline-none"
                 id="task-title"
                 type="text"
@@ -87,20 +88,20 @@ const CreateTask = () => {
 
             {/* Actions */}
             <div className="flex items-center justify-between pt-4">
-              <button
+              <Button
                 type="button"
                 onClick={() => navigate("/tasks")}
                 className="text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors"
               >
                 Discard Changes
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
                 className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-lg font-bold text-sm hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95"
               >
                 <span className="material-symbols-outlined text-sm">save</span>
                 Create Task
-              </button>
+              </Button>
             </div>
           </form>
         </div>
