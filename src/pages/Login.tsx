@@ -2,23 +2,40 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "@/components/AuthLayout";
 import { Button, Card, CardContent, Input } from "@/components/common";
+import { useAuth } from "@/context/AuthContext";
+import { ApiError } from "@/lib/api";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Invalid credentials. Please verify your email and password and try again.");
   const [passwordError, setPasswordError] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!password) {
       setPasswordError(true);
       return;
     }
     setPasswordError(false);
-    // Dummy login — navigate to dashboard
-    navigate("/dashboard");
+    setShowError(false);
+
+    try {
+      setIsSubmitting(true);
+      await login(email, password);
+      navigate("/dashboard");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setErrorMessage(error.message);
+      }
+      setShowError(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -42,7 +59,7 @@ const Login = () => {
             <div className="mb-6 p-3 bg-error-container/40 rounded-lg flex items-start gap-3 border border-error/10">
               <span className="material-symbols-outlined text-error text-lg mt-0.5">error</span>
               <p className="text-error text-xs font-medium leading-relaxed">
-                Invalid credentials. Please verify your email and password and try again.
+                {errorMessage}
               </p>
             </div>
           )}
@@ -101,9 +118,10 @@ const Login = () => {
             {/* Submit */}
             <Button
               type="submit"
+              disabled={isSubmitting}
               className="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-primary-foreground font-bold rounded-lg shadow-md active:scale-95 hover:shadow-lg transition-all text-sm tracking-tight flex items-center justify-center gap-2"
             >
-              Sign Into Workspace
+              {isSubmitting ? "Signing in..." : "Sign Into Workspace"}
               <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </Button>
           </form>

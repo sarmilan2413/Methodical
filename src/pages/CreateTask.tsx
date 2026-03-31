@@ -2,18 +2,42 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import { Button, Input } from "@/components/common";
+import { useAuth } from "@/context/AuthContext";
+import { ApiError } from "@/lib/api";
+import { createTask, type TaskStatus } from "@/lib/tasks";
 
 const CreateTask = () => {
   const navigate = useNavigate();
+  const { token, logout } = useAuth();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("To Do");
+  const [status, setStatus] = useState<TaskStatus>("TODO");
   const [priority, setPriority] = useState("Medium");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Would POST to API
-    navigate("/tasks");
+
+    if (!token) {
+      logout();
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      setErrorMessage("");
+      await createTask({ title, description, status }, token);
+      navigate("/tasks");
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        logout();
+        return;
+      }
+      setErrorMessage("Failed to create task.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -35,6 +59,12 @@ const CreateTask = () => {
         {/* Form */}
         <div className="w-full max-w-2xl bg-surface-container-lowest rounded-xl editorial-shadow p-8">
           <form onSubmit={handleSubmit} className="space-y-8">
+            {errorMessage && (
+              <div className="rounded-lg border border-error/20 bg-error-container/40 px-4 py-3 text-sm text-error">
+                {errorMessage}
+              </div>
+            )}
+
             <div className="space-y-2">
               <label className="block text-xs font-bold uppercase tracking-widest text-on-surface-variant" htmlFor="task-title">Task Title</label>
               <Input
@@ -65,11 +95,11 @@ const CreateTask = () => {
                 <select
                   className="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary transition-all outline-none appearance-none"
                   value={status}
-                  onChange={(e) => setStatus(e.target.value)}
+                  onChange={(e) => setStatus(e.target.value as TaskStatus)}
                 >
-                  <option>To Do</option>
-                  <option>In Progress</option>
-                  <option>Completed</option>
+                  <option value="TODO">To Do</option>
+                  <option value="IN_PROGRESS">In Progress</option>
+                  <option value="DONE">Completed</option>
                 </select>
               </div>
               <div className="space-y-2">
@@ -97,10 +127,11 @@ const CreateTask = () => {
               </Button>
               <Button
                 type="submit"
+                disabled={isSubmitting}
                 className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-lg font-bold text-sm hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95"
               >
                 <span className="material-symbols-outlined text-sm">save</span>
-                Create Task
+                {isSubmitting ? "Creating..." : "Create Task"}
               </Button>
             </div>
           </form>

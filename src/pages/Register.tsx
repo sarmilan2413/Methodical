@@ -2,19 +2,43 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "@/components/AuthLayout";
 import { Button, Card, CardContent, Input } from "@/components/common";
+import { useAuth } from "@/context/AuthContext";
+import { ApiError } from "@/lib/api";
 
 const Register = () => {
   const navigate = useNavigate();
+  const { register } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const passwordStrength = password.length >= 8 ? (password.length >= 12 ? 3 : 2) : password.length > 0 ? 1 : 0;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/dashboard");
+    setErrorMessage("");
+
+    if (!name || !email || !password) {
+      setErrorMessage("All fields are required.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      await register(name, email, password);
+      navigate("/dashboard");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Unable to create account.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -37,6 +61,12 @@ const Register = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            {errorMessage && (
+              <div className="p-3 bg-error-container/40 rounded-lg text-xs text-error border border-error/20">
+                {errorMessage}
+              </div>
+            )}
+
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">Full Name</label>
               <Input
@@ -99,9 +129,10 @@ const Register = () => {
 
             <Button
               type="submit"
+              disabled={isSubmitting}
               className="mt-4 w-full bg-gradient-to-r from-primary to-primary-container text-primary-foreground py-3.5 rounded-lg font-bold text-sm tracking-wide editorial-shadow hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
             >
-              Create Account
+              {isSubmitting ? "Creating account..." : "Create Account"}
             </Button>
           </form>
 

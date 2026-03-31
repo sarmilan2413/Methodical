@@ -1,37 +1,81 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import { Button, Input } from "@/components/common";
-
-const taskData: Record<string, { title: string; description: string; status: string; priority: string }> = {
-  "1": { title: "Foundation Schematics", description: "Drafting the structural core for the North Pavilion extension. Must comply with local building codes.", status: "Completed", priority: "Medium" },
-  "2": { title: "Material Selection", description: "Reviewing sustainable glass and timber options for the main atrium facade.", status: "In Progress", priority: "Medium" },
-  "3": { title: "Permit Approval", description: "Immediate action required for the zoning permit application. Deadline approaching.", status: "In Progress", priority: "High Priority" },
-};
-
-const fallbackTask = {
-  title: "Structural Analysis - Wing B",
-  description: "Verify load-bearing capacities for the secondary support columns in the east wing. Documentation needs to follow ISO-9001 standards for architectural safety.",
-  status: "In Progress",
-  priority: "High Priority",
-};
+import { useAuth } from "@/context/AuthContext";
+import { ApiError } from "@/lib/api";
+import { getTaskById, updateTask, type TaskStatus } from "@/lib/tasks";
 
 const EditTask = () => {
   const navigate = useNavigate();
+  const { token, logout } = useAuth();
   const { id } = useParams();
-  const initial = id && taskData[id] ? taskData[id] : fallbackTask;
+  const taskId = useMemo(() => Number(id), [id]);
 
-  const [title, setTitle] = useState(initial.title);
-  const [description, setDescription] = useState(initial.description);
-  const [status, setStatus] = useState(initial.status);
-  const [priority, setPriority] = useState(initial.priority);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState<TaskStatus>("TODO");
+  const [priority, setPriority] = useState("Medium");
   const [hasChanges, setHasChanges] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const markChanged = () => { if (!hasChanges) setHasChanges(true); };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    const loadTask = async () => {
+      if (!token) {
+        logout();
+        return;
+      }
+
+      if (!taskId || Number.isNaN(taskId)) {
+        navigate("/tasks");
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const task = await getTaskById(taskId, token);
+        setTitle(task.title);
+        setDescription(task.description);
+        setStatus(task.status);
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 401) {
+          logout();
+          return;
+        }
+        setErrorMessage("Unable to load task details.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadTask();
+  }, [taskId, token, logout, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/tasks");
+    if (!token || !taskId || Number.isNaN(taskId)) {
+      logout();
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+      setErrorMessage("");
+      await updateTask(taskId, { title, description, status }, token);
+      navigate("/tasks");
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        logout();
+        return;
+      }
+      setErrorMessage("Failed to update task.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -52,7 +96,19 @@ const EditTask = () => {
 
         {/* Form */}
         <div className="w-full max-w-2xl bg-surface-container-lowest rounded-xl editorial-shadow p-5 sm:p-8">
+          {isLoading && (
+            <div className="mb-5 rounded-lg bg-surface-container-high px-4 py-3 text-sm text-on-surface-variant">
+              Loading task...
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-7 md:space-y-8">
+            {errorMessage && (
+              <div className="rounded-lg border border-error/20 bg-error-container/40 px-4 py-3 text-sm text-error">
+                {errorMessage}
+              </div>
+            )}
+
             <div className="space-y-2">
               <label className="block text-xs font-bold uppercase tracking-widest text-on-surface-variant">Task Title</label>
               <Input
@@ -79,11 +135,11 @@ const EditTask = () => {
                 <select
                   className="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary transition-all outline-none appearance-none"
                   value={status}
-                  onChange={(e) => { setStatus(e.target.value); markChanged(); }}
+                  onChange={(e) => { setStatus(e.target.value as TaskStatus); markChanged(); }}
                 >
-                  <option>To Do</option>
-                  <option>In Progress</option>
-                  <option>Completed</option>
+                  <option value="TODO">To Do</option>
+                  <option value="IN_PROGRESS">In Progress</option>
+                  <option value="DONE">Completed</option>
                 </select>
               </div>
               <div className="space-y-2">
@@ -129,10 +185,11 @@ const EditTask = () => {
               </Button>
               <Button
                 type="submit"
+                disabled={isSaving || isLoading}
                 className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-lg font-bold text-sm hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95"
               >
                 <span className="material-symbols-outlined text-sm">save</span>
-                Update Task
+                {isSaving ? "Saving..." : "Update Task"}
               </Button>
             </div>
           </form>

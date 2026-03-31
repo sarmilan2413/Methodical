@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import StatusBadge from "@/components/StatusBadge";
+import { ApiError } from "@/lib/api";
+import { deleteTask, getTasks, type ApiTask } from "@/lib/tasks";
+import { useAuth } from "@/context/AuthContext";
 
-interface Task {
-  id: string;
+interface UiTask {
+  id: number;
   icon: string;
   title: string;
   description: string;
@@ -12,27 +15,63 @@ interface Task {
   statusLabel: string;
 }
 
-const allTasks: Task[] = [
-  { id: "1", icon: "architecture", title: "Foundation Schematics", description: "Drafting the structural core for the North Pavili...", status: "success", statusLabel: "Success" },
-  { id: "2", icon: "lightbulb", title: "Material Selection", description: "Reviewing sustainable glass and timber option...", status: "warning", statusLabel: "Warning" },
-  { id: "3", icon: "warning", title: "Permit Approval", description: "Immediate action required for the zoning permi...", status: "error", statusLabel: "Error" },
-  { id: "4", icon: "draw", title: "Interior Layout Design", description: "Planning the open-concept workspace for floor 3...", status: "success", statusLabel: "Success" },
-  { id: "5", icon: "engineering", title: "HVAC System Review", description: "Evaluating energy-efficient cooling solutions...", status: "warning", statusLabel: "Warning" },
-  { id: "6", icon: "landscape", title: "Landscape Integration", description: "Green roof design coordination with the city...", status: "success", statusLabel: "Success" },
-  { id: "7", icon: "electric_bolt", title: "Electrical Grid Plan", description: "Mapping power distribution for east wing...", status: "error", statusLabel: "Error" },
-  { id: "8", icon: "water_drop", title: "Plumbing Assessment", description: "Water recycling system feasibility study...", status: "warning", statusLabel: "Warning" },
-  { id: "9", icon: "security", title: "Fire Safety Compliance", description: "Reviewing fire escape routes and sprinkler...", status: "success", statusLabel: "Success" },
-  { id: "10", icon: "palette", title: "Color Palette Finalization", description: "Finalizing exterior and interior paint specs...", status: "success", statusLabel: "Success" },
-  { id: "11", icon: "construction", title: "Scaffolding Logistics", description: "Coordinating scaffolding for Phase 2 elevation...", status: "warning", statusLabel: "Warning" },
-  { id: "12", icon: "eco", title: "Sustainability Audit", description: "LEED certification document preparation...", status: "success", statusLabel: "Success" },
-];
+const mapStatus = (status: ApiTask["status"]): Pick<UiTask, "status" | "statusLabel" | "icon"> => {
+  if (status === "DONE") {
+    return { status: "success", statusLabel: "Done", icon: "check_circle" };
+  }
+  if (status === "IN_PROGRESS") {
+    return { status: "warning", statusLabel: "In Progress", icon: "hourglass_top" };
+  }
+  return { status: "error", statusLabel: "To Do", icon: "radio_button_unchecked" };
+};
 
 const ITEMS_PER_PAGE = 3;
 
 const Tasks = () => {
+  const { token, logout } = useAuth();
+  const [tasks, setTasks] = useState<ApiTask[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
   const [filter, setFilter] = useState("");
   const [page, setPage] = useState(1);
   const [viewMode, setViewMode] = useState<"table" | "card">("table");
+
+  const loadTasks = async () => {
+    if (!token) {
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const data = await getTasks(token);
+      setTasks(data);
+      setError("");
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 401) {
+        logout();
+      }
+      setError("Failed to load tasks.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadTasks();
+  }, [token]);
+
+  const allTasks = useMemo<UiTask[]>(
+    () =>
+      tasks.map((t) => {
+        const mapped = mapStatus(t.status);
+        return {
+          id: t.id,
+          title: t.title,
+          description: t.description,
+          ...mapped,
+        };
+      }),
+    [tasks],
+  );
 
   const filtered = allTasks.filter(
     (t) =>
@@ -43,9 +82,20 @@ const Tasks = () => {
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
-  const handleDelete = (id: string) => {
-    // In real app, would remove from state/API
-    alert(`Delete task ${id}`);
+  const handleDelete = async (id: number) => {
+    if (!token) {
+      return;
+    }
+    try {
+      await deleteTask(id, token);
+      setTasks((current) => current.filter((task) => task.id !== id));
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 401) {
+        logout();
+        return;
+      }
+      setError("Failed to delete task.");
+    }
   };
 
   return (
@@ -57,7 +107,7 @@ const Tasks = () => {
             <h2 className="text-4xl font-black text-on-surface tracking-tighter mb-2">Project Tasks</h2>
             <p className="text-on-surface-variant font-medium flex items-center gap-2">
               <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              {filtered.length} active items across 3 project boards
+              {filtered.length} active items
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -99,6 +149,18 @@ const Tasks = () => {
             </Link>
           </div>
         </div>
+
+        {error && (
+          <div className="mb-6 rounded-lg border border-error/20 bg-error-container/40 px-4 py-3 text-sm text-error">
+            {error}
+          </div>
+        )}
+
+        {isLoading && (
+          <div className="mb-6 rounded-lg bg-surface-container-high px-4 py-3 text-sm text-on-surface-variant">
+            Loading tasks...
+          </div>
+        )}
 
         {/* Table */}
         {viewMode === "table" && (
