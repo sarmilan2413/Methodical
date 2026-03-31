@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 17% 98%;
+    --foreground: 200 19% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 200 19% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 200 19% 10%;
+
+    --primary: 248 74% 47%;
+    --primary-foreground: 0 0% 100%;
+
+    --primary-container: 239 77% 59%;
+    --primary-container-foreground: 244 100% 92%;
+
+    --secondary: 241 28% 47%;
+    --secondary-foreground: 0 0% 100%;
+
+    --secondary-container: 242 100% 85%;
+
+    --muted: 210 14% 95%;
+    --muted-foreground: 248 11% 30%;
+
+    --accent: 240 17% 95%;
+    --accent-foreground: 200 19% 10%;
+
+    --destructive: 0 73% 41%;
+    --destructive-foreground: 0 0% 100%;
+
+    --error: 0 73% 41%;
+    --error-container: 0 100% 93%;
+
+    --border: 253 20% 81%;
+    --input: 210 14% 91%;
+    --ring: 248 74% 47%;
+
+    --radius: 0.75rem;
+
+    /* Methodical design system surfaces */
+    --surface: 210 17% 98%;
+    --surface-dim: 210 4% 85%;
+    --surface-container-lowest: 0 0% 100%;
+    --surface-container-low: 210 8% 95%;
+    --surface-container: 210 7% 93%;
+    --surface-container-high: 210 5% 91%;
+    --surface-container-highest: 210 4% 88%;
+
+    --on-surface: 200 19% 10%;
+    --on-surface-variant: 248 11% 30%;
+    --outline: 249 7% 50%;
+    --outline-variant: 253 20% 81%;
+
+    --primary-fixed: 244 100% 94%;
+    --tertiary: 22 100% 25%;
+    --tertiary-fixed: 22 100% 89%;
+    --tertiary-fixed-dim: 22 100% 79%;
+    --tertiary-container: 22 100% 32%;
+
+    --sidebar-background: 213 18% 95%;
+    --sidebar-foreground: 200 19% 10%;
+    --sidebar-primary: 248 74% 47%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 30% 95%;
+    --sidebar-accent-foreground: 240 48% 43%;
+    --sidebar-border: 253 20% 81%;
+    --sidebar-ring: 248 74% 47%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+}
+
+@layer utilities {
+  .editorial-shadow {
+    box-shadow: 0 20px 40px rgba(25, 28, 29, 0.05);
+  }
+  .editorial-shadow-hover {
+    box-shadow: 0 20px 40px rgba(53, 37, 205, 0.06);
+  }
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+  }
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+.material-symbols-outlined.filled {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
