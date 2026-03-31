@@ -31,38 +31,22 @@ export async function apiRequest<T>(
     headers.Authorization = `Bearer ${token}`;
   }
 
-  try {
-    const response = await fetch(`${API_BASE_URL}${path}`, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : undefined,
-    });
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
 
-    const raw = await response.text();
-    let parsed: unknown;
+  const raw = await response.text();
+  const parsed = raw ? JSON.parse(raw) : null;
 
-    try {
-      parsed = raw ? JSON.parse(raw) : null;
-    } catch (parseError) {
-      throw new ApiError(`Invalid response format`, response.status);
-    }
-
-    if (!response.ok) {
-      const message =
-        parsed && typeof parsed === 'object' && 'message' in parsed && typeof (parsed as any).message === "string"
-          ? (parsed as any).message
-          : `Request failed with status ${response.status}`;
-      throw new ApiError(message, response.status);
-    }
-
-    return parsed as T;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw new ApiError(
-      error instanceof Error ? error.message : "Network request failed",
-      0
-    );
+  if (!response.ok) {
+    const message =
+      parsed?.message && typeof parsed.message === "string"
+        ? parsed.message
+        : `Request failed with status ${response.status}`;
+    throw new ApiError(message, response.status);
   }
+
+  return parsed as T;
 }
