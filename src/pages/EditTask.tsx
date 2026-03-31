@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import AppLayout from "@/components/layout/AppLayout";
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
 
 const taskData: Record<string, { title: string; description: string; status: string; priority: string }> = {
   "1": { title: "Foundation Schematics", description: "Drafting the structural core for the North Pavilion extension. Must comply with local building codes.", status: "Completed", priority: "Medium" },
@@ -34,7 +34,7 @@ const EditTask = () => {
   };
 
   return (
-    <AppLayout>
+    <LayoutWrapper>
       <div className="flex flex-col items-center justify-start">
         {/* Header */}
         <div className="w-full max-w-2xl mb-10 flex flex-col gap-2">
@@ -151,7 +151,7 @@ const EditTask = () => {
           </div>
         </div>
       </div>
-    </AppLayout>
+    </LayoutWrapper>
   );
 };
 

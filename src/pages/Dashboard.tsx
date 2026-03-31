@@ -1,4 +1,4 @@
-import AppLayout from "@/components/layout/AppLayout";
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import StatCard from "@/components/StatCard";
 import { Link } from "react-router-dom";
 
@@ -24,7 +24,7 @@ const deadlines = [
 
 const Dashboard = () => {
   return (
-    <AppLayout>
+    <LayoutWrapper>
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Headline */}
         <div className="flex flex-col gap-1">
@@ -102,7 +102,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-    </AppLayout>
+    </LayoutWrapper>
   );
 };
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import AppLayout from "@/components/layout/AppLayout";
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import StatusBadge from "@/components/StatusBadge";
 
 interface Task {
@@ -48,7 +48,7 @@ const Tasks = () => {
   };
 
   return (
-    <AppLayout>
+    <LayoutWrapper>
       <div className="max-w-7xl mx-auto w-full">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
@@ -175,7 +175,7 @@ const Tasks = () => {
           </div>
         </div>
       </div>
-    </AppLayout>
+    </LayoutWrapper>
   );
 };
 

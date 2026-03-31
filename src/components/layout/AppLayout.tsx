@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import Sidebar from "./Sidebar";
-import TopNav from "./TopNav";
+import Navbar from "./Navbar";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -11,7 +11,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
     <div className="min-h-screen bg-surface text-on-surface font-body">
       <Sidebar />
       <main className="md:ml-64 flex flex-col min-h-screen">
-        <TopNav />
+        <Navbar />
         <section className="flex-1 p-6 md:p-8">
           {children}
         </section>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AppLayout from "@/components/layout/AppLayout";
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
 
 const CreateTask = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const CreateTask = () => {
   };
 
   return (
-    <AppLayout>
+    <LayoutWrapper>
       <div className="flex flex-col items-center justify-start">
         {/* Header */}
         <div className="w-full max-w-2xl mb-10 flex flex-col gap-2">
@@ -105,7 +105,7 @@ const CreateTask = () => {
           </form>
         </div>
       </div>
-    </AppLayout>
+    </LayoutWrapper>
   );
 };
 
