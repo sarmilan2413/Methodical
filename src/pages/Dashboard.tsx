@@ -22,6 +22,12 @@ const deadlines = [
   { month: "OCT", day: 19, title: "Material Selection Workshop", subtitle: "Client: Novo Urban" },
 ];
 
+const activityItems = [
+  "Task #42 moved to In Progress",
+  "Material review deck shared with team",
+  "Permit checklist updated by Ops",
+];
+
 const Dashboard = () => {
   return (
     <LayoutWrapper>
@@ -99,6 +105,41 @@ const Dashboard = () => {
               <p className="text-sm opacity-80 mb-3">Press ⌘K to open the architect's toolkit from anywhere.</p>
               <a href="#" className="text-sm font-bold underline underline-offset-4">Quick Start Guide</a>
             </div>
+          </div>
+        </div>
+
+        {/* Quick Actions + Activity */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="bg-surface-container-lowest rounded-xl p-6 editorial-shadow">
+            <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-4">Quick Actions</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Link
+                to="/create-task"
+                className="flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-3 text-sm font-semibold hover:opacity-95 transition-opacity"
+              >
+                <span className="material-symbols-outlined text-base">add</span>
+                New Task
+              </Link>
+              <Link
+                to="/tasks"
+                className="flex items-center gap-2 rounded-lg bg-surface-container-high px-4 py-3 text-sm font-semibold text-on-surface hover:bg-surface-container-highest transition-colors"
+              >
+                <span className="material-symbols-outlined text-base">list</span>
+                Browse Tasks
+              </Link>
+            </div>
+          </div>
+
+          <div className="bg-surface-container-lowest rounded-xl p-6 editorial-shadow">
+            <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-4">Recent Activity</p>
+            <ul className="space-y-3">
+              {activityItems.map((item) => (
+                <li key={item} className="flex items-start gap-3 text-sm text-on-surface-variant">
+                  <span className="material-symbols-outlined text-primary text-base mt-0.5">fiber_manual_record</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
