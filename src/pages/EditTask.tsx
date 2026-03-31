@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
+import { Button, Input } from "@/components/common";
 
 const taskData: Record<string, { title: string; description: string; status: string; priority: string }> = {
   "1": { title: "Foundation Schematics", description: "Drafting the structural core for the North Pavilion extension. Must comply with local building codes.", status: "Completed", priority: "Medium" },
@@ -35,26 +36,26 @@ const EditTask = () => {
 
   return (
     <LayoutWrapper>
-      <div className="flex flex-col items-center justify-start">
+      <div className="flex flex-col items-center justify-start px-1 sm:px-0">
         {/* Header */}
-        <div className="w-full max-w-2xl mb-10 flex flex-col gap-2">
-          <nav className="flex items-center gap-2 text-on-surface-variant text-xs font-medium mb-2">
-            <a className="hover:text-primary" href="#">Workspace</a>
+        <div className="w-full max-w-2xl mb-8 md:mb-10 flex flex-col gap-2">
+          <nav className="flex items-center gap-2 text-on-surface-variant text-xs font-medium mb-2 overflow-x-auto pb-1">
+            <button type="button" className="hover:text-primary transition-colors">Workspace</button>
             <span className="material-symbols-outlined text-xs">chevron_right</span>
-            <a className="hover:text-primary cursor-pointer" onClick={() => navigate("/tasks")}>Tasks</a>
+            <button type="button" className="hover:text-primary transition-colors" onClick={() => navigate("/tasks")}>Tasks</button>
             <span className="material-symbols-outlined text-xs">chevron_right</span>
             <span className="text-on-surface">Edit Task</span>
           </nav>
-          <h2 className="text-4xl font-extrabold tracking-tight text-on-surface">Edit Task Details</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-on-surface">Edit Task Details</h2>
           <p className="text-on-surface-variant max-w-lg">Refine the structural requirements and timeline for this architectural deliverable.</p>
         </div>
 
         {/* Form */}
-        <div className="w-full max-w-2xl bg-surface-container-lowest rounded-xl editorial-shadow p-8">
-          <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="w-full max-w-2xl bg-surface-container-lowest rounded-xl editorial-shadow p-5 sm:p-8">
+          <form onSubmit={handleSubmit} className="space-y-7 md:space-y-8">
             <div className="space-y-2">
               <label className="block text-xs font-bold uppercase tracking-widest text-on-surface-variant">Task Title</label>
-              <input
+              <Input
                 className="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 text-on-surface font-medium focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all placeholder:text-outline-variant outline-none"
                 type="text"
                 value={title}
@@ -66,7 +67,7 @@ const EditTask = () => {
               <label className="block text-xs font-bold uppercase tracking-widest text-on-surface-variant">Description</label>
               <textarea
                 className="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all resize-none outline-none"
-                rows={5}
+                rows={6}
                 value={description}
                 onChange={(e) => { setDescription(e.target.value); markChanged(); }}
               />
@@ -117,27 +118,28 @@ const EditTask = () => {
             )}
 
             {/* Actions */}
-            <div className="flex items-center justify-between pt-4">
-              <button
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 md:pt-4">
+              <Button
                 type="button"
                 onClick={() => navigate("/tasks")}
-                className="text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors"
+                variant="ghost"
+                className="text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors justify-center sm:justify-start"
               >
                 Discard Changes
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
-                className="flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-lg font-bold text-sm hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95"
+                className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-8 py-3 rounded-lg font-bold text-sm hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95"
               >
                 <span className="material-symbols-outlined text-sm">save</span>
                 Update Task
-              </button>
+              </Button>
             </div>
           </form>
         </div>
 
         {/* Meta info */}
-        <div className="w-full max-w-2xl mt-6 flex items-center justify-between text-xs text-on-surface-variant">
+        <div className="w-full max-w-2xl mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-on-surface-variant">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-black uppercase tracking-widest">Created by</span>
             <div className="flex items-center gap-2">
@@ -145,7 +147,7 @@ const EditTask = () => {
               <span className="font-semibold text-on-surface">Sarah Mitchell</span>
             </div>
           </div>
-          <div>
+          <div className="md:text-right">
             <span className="text-[10px] font-black uppercase tracking-widest">Last Modified</span>
             <p className="font-medium text-on-surface">October 24, 2023 • 14:32</p>
           </div>
