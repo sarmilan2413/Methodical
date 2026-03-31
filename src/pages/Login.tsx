@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "@/components/AuthLayout";
+import { Button, Card, CardContent, Input } from "@/components/common";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -35,7 +36,8 @@ const Login = () => {
         </header>
 
         {/* Form Card */}
-        <main className="bg-surface-container-lowest rounded-xl p-8 editorial-shadow">
+        <Card className="bg-surface-container-lowest rounded-xl editorial-shadow border-none shadow-none">
+          <CardContent className="p-8">
           {showError && (
             <div className="mb-6 p-3 bg-error-container/40 rounded-lg flex items-start gap-3 border border-error/10">
               <span className="material-symbols-outlined text-error text-lg mt-0.5">error</span>
@@ -53,7 +55,7 @@ const Login = () => {
               </label>
               <div className="relative group">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-lg group-focus-within:text-primary transition-colors">mail</span>
-                <input
+                <Input
                   className="w-full pl-10 pr-4 py-3 bg-surface-container-high border-none rounded-lg text-sm text-on-surface placeholder:text-outline/60 focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all outline-none"
                   id="email"
                   type="email"
@@ -76,7 +78,7 @@ const Login = () => {
               </div>
               <div className="relative group">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-lg group-focus-within:text-primary transition-colors">lock</span>
-                <input
+                <Input
                   className={`w-full pl-10 pr-4 py-3 bg-surface-container-high rounded-lg text-sm text-on-surface placeholder:text-outline/60 focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all outline-none ${passwordError ? "border-b-2 border-error/30" : "border-none"}`}
                   id="password"
                   type="password"
@@ -97,13 +99,13 @@ const Login = () => {
             </div>
 
             {/* Submit */}
-            <button
+            <Button
               type="submit"
               className="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-primary-foreground font-bold rounded-lg shadow-md active:scale-95 hover:shadow-lg transition-all text-sm tracking-tight flex items-center justify-center gap-2"
             >
               Sign Into Workspace
               <span className="material-symbols-outlined text-lg">arrow_forward</span>
-            </button>
+            </Button>
           </form>
 
           {/* Divider */}
@@ -122,7 +124,8 @@ const Login = () => {
               </button>
             </div>
           </div>
-        </main>
+          </CardContent>
+        </Card>
 
         {/* Footer */}
         <footer className="text-center">

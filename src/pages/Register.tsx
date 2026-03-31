@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "@/components/AuthLayout";
+import { Button, Card, CardContent, Input } from "@/components/common";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -28,7 +29,8 @@ const Register = () => {
         </div>
 
         {/* Card */}
-        <div className="bg-surface-container-lowest rounded-xl p-8 editorial-shadow flex flex-col gap-6">
+        <Card className="bg-surface-container-lowest rounded-xl editorial-shadow border-none shadow-none">
+          <CardContent className="p-8 flex flex-col gap-6">
           <div className="flex flex-col gap-1">
             <h2 className="text-xl font-bold tracking-tight text-on-surface">Create your workspace</h2>
             <p className="text-sm text-on-surface-variant">Start building with editorial precision.</p>
@@ -37,7 +39,7 @@ const Register = () => {
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">Full Name</label>
-              <input
+              <Input
                 className="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-outline/50 outline-none"
                 placeholder="Arne Jacobsen"
                 type="text"
@@ -48,7 +50,7 @@ const Register = () => {
 
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">Email Address</label>
-              <input
+              <Input
                 className="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-outline/50 outline-none"
                 placeholder="architect@methodical.com"
                 type="email"
@@ -60,7 +62,7 @@ const Register = () => {
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1">Password</label>
               <div className="relative group">
-                <input
+                <Input
                   className="w-full bg-surface-container-high border-none rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-outline/50 outline-none pr-10"
                   placeholder="••••••••"
                   type={showPassword ? "text" : "password"}
@@ -95,12 +97,12 @@ const Register = () => {
               </div>
             </div>
 
-            <button
+            <Button
               type="submit"
               className="mt-4 w-full bg-gradient-to-r from-primary to-primary-container text-primary-foreground py-3.5 rounded-lg font-bold text-sm tracking-wide editorial-shadow hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
             >
               Create Account
-            </button>
+            </Button>
           </form>
 
           {/* Divider */}
@@ -120,7 +122,8 @@ const Register = () => {
               <span className="text-xs font-bold text-on-surface">GitHub</span>
             </button>
           </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Footer */}
         <p className="text-center text-sm text-on-surface-variant">
