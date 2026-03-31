@@ -1,5 +1,5 @@
 import { TaskStatus } from '@prisma/client';
-import { IsEnum, IsInt, IsNotEmpty, IsString, MaxLength, Min } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class CreateTaskDto {
   @IsString()
@@ -14,8 +14,4 @@ export class CreateTaskDto {
 
   @IsEnum(TaskStatus)
   status!: TaskStatus;
-
-  @IsInt()
-  @Min(1)
-  userId!: number;
 }

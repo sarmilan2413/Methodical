@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Task } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -8,13 +8,13 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 export class TasksService {
 	constructor(private readonly prisma: PrismaService) {}
 
-	create(dto: CreateTaskDto): Promise<Task> {
+	create(dto: CreateTaskDto, userId: number): Promise<Task> {
 		return this.prisma.task.create({
 			data: {
 				title: dto.title,
 				description: dto.description,
 				status: dto.status,
-				userId: dto.userId,
+				userId,
 			},
 		});
 	}
@@ -26,18 +26,32 @@ export class TasksService {
 		});
 	}
 
-	findOneById(id: number): Promise<Task | null> {
-		return this.prisma.task.findUnique({ where: { id } });
+	findOneById(id: number, userId: number): Promise<Task | null> {
+		return this.prisma.task.findFirst({ where: { id, userId } });
 	}
 
-	update(id: number, dto: UpdateTaskDto): Promise<Task> {
-		return this.prisma.task.update({
-			where: { id },
-			data: dto,
+	update(id: number, dto: UpdateTaskDto, userId: number): Promise<Task> {
+		return this.prisma.$transaction(async (tx) => {
+			const existingTask = await tx.task.findFirst({ where: { id, userId } });
+			if (!existingTask) {
+				throw new NotFoundException('Task not found');
+			}
+
+			return tx.task.update({
+				where: { id },
+				data: dto,
+			});
 		});
 	}
 
-	remove(id: number): Promise<Task> {
-		return this.prisma.task.delete({ where: { id } });
+	remove(id: number, userId: number): Promise<Task> {
+		return this.prisma.$transaction(async (tx) => {
+			const existingTask = await tx.task.findFirst({ where: { id, userId } });
+			if (!existingTask) {
+				throw new NotFoundException('Task not found');
+			}
+
+			return tx.task.delete({ where: { id } });
+		});
 	}
 }
