@@ -1,97 +1,85 @@
-# Methodical
+# Task Manager App
 
-A clean and modern frontend project focused on productivity workflows, including authentication interfaces and task management screens.
+## 📌 Overview
 
-## Project Overview
+A full-stack task management application with authentication and CRUD operations. Users can register, login, and manage their own tasks securely.
 
-Methodical is a UI-first frontend application designed to provide a structured workspace experience.
-It includes:
+---
 
-- Authentication screens (Login and Register)
-- Dashboard and task workflow views
-- Reusable layout and component system
-- Responsive styling for desktop and mobile
+## 🛠 Tech Stack
 
-## Tech Stack
+* Frontend: React (Vite), Tailwind CSS
+* Backend: NestJS
+* Database: PostgreSQL (Prisma)
+* Auth: JWT
 
-- Next.js
-- Tailwind CSS
-- TypeScript
+---
 
-## Features
+## 🌐 Live Demo
 
-- Authentication UI
-	- Login page UI
-	- Register page UI
-	- Form validation states and polished UX interactions
-- Task Management UI
-	- Dashboard overview cards
-	- Task list and task detail/edit screens
-	- Reusable layout: Navbar, Sidebar, Layout wrapper
-- Reusable UI Components
-	- Button
-	- Input
-	- Card
+https://methodical-01-rh3k.vercel.app/
 
-## Installation
+---
 
-1. Clone the repository:
+## 🎨 Design
 
-```bash
-git clone https://github.com/sarmilan2413/Methodical.git
-```
+Figma Design: https://www.figma.com/design/8eo1ClWBLCXbvdrIX2TQ6S/Untitled?node-id=0-1&t=mYVrpJhvnUGDo14N-0
 
-2. Navigate to the project folder:
+---
+
+## 📚 Repository
+
+GitHub: https://github.com/sarmilan2413/Methodical.git
+
+---
+
+## ⚙️ Setup
+
+### Backend
 
 ```bash
-cd Methodical
-```
-
-3. Install dependencies:
-
-```bash
+cd backend
 npm install
+npm run start:dev
 ```
 
-## How To Run Locally
-
-Start the development server:
+### Frontend
 
 ```bash
+cd pixel-perfection-studio-682-main
+npm install
 npm run dev
 ```
 
-Then open the local URL shown in your terminal (commonly http://localhost:8080).
+---
 
-## Folder Structure
+## 🔑 Environment Variables
 
-```text
-.
-|- public/
-|- src/
-|  |- components/
-|  |  |- common/
-|  |  |- layout/
-|  |  |- ui/
-|  |- hooks/
-|  |- lib/
-|  |- pages/
-|  |- test/
-|  |- App.tsx
-|  |- main.tsx
-|- index.html
-|- package.json
-|- tailwind.config.ts
-|- tsconfig.json
+Backend:
+
+```env
+DATABASE_URL=your_db_url
+JWT_SECRET=your_secret
+PORT=3000
 ```
 
-## Scripts
+Frontend:
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run test` - Run tests
+```env
+VITE_API_URL=your_backend_url/api
+```
 
-## Project Status
+---
 
-Frontend UI completed and ready for backend/API integration.
+## 🔗 API
+
+* POST /api/auth/register
+* POST /api/auth/login
+* GET /api/users/me
+* CRUD /api/tasks
+
+---
+
+## 👨‍💻 Author
+
+Sarmilan
